@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class VideoUnitVo {
 
-private String videoUnitId;
-private Integer downloadHd;
+    private String videoUnitId;
+    private Integer downloadHd;
 
 }

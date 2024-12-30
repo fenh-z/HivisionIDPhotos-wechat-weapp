@@ -10,7 +10,7 @@ public interface OtherApiService {
     ExploreIndexDto exploreDtoCount();
 
     //返回用户今日剩余次数,type对应explore_set表，type2对应photo_record
-    long checkTheFreeQuota(Integer type,Integer type2,Integer userId);
+    long checkTheFreeQuota(Integer type, Integer type2, Integer userId);
 
     //黑白图片上色
     String colourize(ExploreDto exploreDto);

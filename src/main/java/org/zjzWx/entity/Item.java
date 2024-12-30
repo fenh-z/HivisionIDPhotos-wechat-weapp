@@ -1,4 +1,5 @@
 package org.zjzWx.entity;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -15,23 +16,23 @@ public class Item {
 
     @TableId(type = IdType.AUTO)
     private Integer id;
-/**
+    /**
      * 名称
      */
     private String name;
-/**
+    /**
      * 像素-宽
      */
     private Integer widthPx;
-/**
+    /**
      * 像素-高
      */
     private Integer heightPx;
-/**
+    /**
      * 尺寸-宽
      */
     private Integer widthMm;
-/**
+    /**
      * 尺寸-高
      */
     private Integer heightMm;
@@ -40,17 +41,16 @@ public class Item {
      */
     private Integer icon;
 
-/**
+    /**
      * 排序
      */
     private Integer sort;
-/**
+    /**
      * 1=常用寸照，2=各类签证，3=各类证件
      */
     private Integer category;
 
     private Integer dpi;
-
 
 
 }

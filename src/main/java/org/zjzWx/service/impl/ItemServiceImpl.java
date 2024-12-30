@@ -15,19 +15,19 @@ import java.util.List;
 
 
 @Service
-public class ItemServiceImpl extends ServiceImpl<ItemDao,Item> implements ItemService {
+public class ItemServiceImpl extends ServiceImpl<ItemDao, Item> implements ItemService {
 
     @Autowired
     private CustomService customService;
 
     @Override
-    public <T> Page<T> itemList(int pageNum, int pageSize, int type, String userId,String name) {
+    public <T> Page<T> itemList(int pageNum, int pageSize, int type, String userId, String name) {
 
         //定制列表
-        if(type==4){
+        if (type == 4) {
             Page<Custom> page = new Page<>(pageNum, pageSize);
             QueryWrapper<Custom> qw = new QueryWrapper<>();
-            qw.eq("user_id",userId);
+            qw.eq("user_id", userId);
             qw.orderByDesc("create_time");
             return (Page<T>) customService.page(page, qw);
         }
@@ -36,13 +36,12 @@ public class ItemServiceImpl extends ServiceImpl<ItemDao,Item> implements ItemSe
         //规格列表
         Page<Item> page = new Page<>(pageNum, pageSize);
         QueryWrapper<Item> qw = new QueryWrapper<>();
-        if(name!=null && !name.equals("")){
-            qw.like("name",name);
-        }else {
-            qw.eq("category",type);
+        if (name != null && !name.equals("")) {
+            qw.like("name", name);
+        } else {
+            qw.eq("category", type);
         }
         return (Page<T>) baseMapper.selectPage(page, qw);
-
 
 
     }

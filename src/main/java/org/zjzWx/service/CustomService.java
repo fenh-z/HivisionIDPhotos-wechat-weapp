@@ -6,5 +6,4 @@ import org.zjzWx.entity.Custom;
 public interface CustomService extends IService<Custom> {
 
 
-
 }

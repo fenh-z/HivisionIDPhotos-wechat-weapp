@@ -21,15 +21,16 @@ public class R<T> implements Serializable {
     }
 
 
+    public static <T> R<T> ok(T data) {
+        return new R<>(200, "请求成功", data);
+    }
 
-    public static <T>R<T> ok(T data) {
-        return new R<>(200,"请求成功",data);
+    public static <T> R<T> no() {
+        return new R<>(404, "暂无数据", null);
     }
-    public static <T>R<T> no() {
-        return new R<>(404,"暂无数据",null);
-    }
-    public static <T>R<T> no(T data) {
-        return new R<>(404,"操作失败",data);
+
+    public static <T> R<T> no(T data) {
+        return new R<>(404, "操作失败", data);
     }
 
 

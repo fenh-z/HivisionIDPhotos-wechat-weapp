@@ -19,7 +19,7 @@ public interface AdminService extends IService<Admin> {
     String checkLogin(String code);
 
     //登录成功code1=微信code，code2=系统code
-    String okLogin(String code1,String code2);
+    String okLogin(String code1, String code2);
 
     //管理员首页数据
     AdminIndexVo adminIndex();
@@ -31,13 +31,13 @@ public interface AdminService extends IService<Admin> {
     IPage<Custom> getCustomPage(int pageNum, int pageSize, int userId);
 
     //保存列表
-    IPage<Photo> getPhotoPage(int pageNum, int pageSize, int userId,String name);
+    IPage<Photo> getPhotoPage(int pageNum, int pageSize, int userId, String name);
 
     //行为记录
-    IPage<PhotoRecord> getPhotoRecordPage(int pageNum, int pageSize,int userId);
+    IPage<PhotoRecord> getPhotoRecordPage(int pageNum, int pageSize, int userId);
 
     //用户列表
-    IPage<User> getUserPage(int pageNum, int pageSize,int userId,String name);
+    IPage<User> getUserPage(int pageNum, int pageSize, int userId, String name);
 
     //读取系统设置
     WebSet getWebSet();
@@ -58,7 +58,7 @@ public interface AdminService extends IService<Admin> {
     void updateExploreSet(AppSet appSet);
 
     //用户列表面板：type=1踢掉登录状态，2删除定制记录，3删除保存记录，4删除行为记录，5禁止登录并踢掉登录，6恢复登录
-    String updateUserStatus(Integer userId,Integer type);
+    String updateUserStatus(Integer userId, Integer type);
 
     //使用量统计
     ExploreIndexAdminDto exploreIndexAdmin();

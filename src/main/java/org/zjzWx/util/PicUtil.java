@@ -24,7 +24,7 @@ public class PicUtil {
     //directory           图片路径
     //originalFilename    原始图片名
     //file                前端传过来的图片
-    public static String filesCopy(String folderName,String directory,String originalFilename,MultipartFile file) throws IOException {
+    public static String filesCopy(String folderName, String directory, String originalFilename, MultipartFile file) throws IOException {
 
         File uploadFolder = new File(directory, folderName);
         if (!uploadFolder.exists()) {
@@ -41,7 +41,7 @@ public class PicUtil {
     }
 
     //图片删除
-    public static void deleteImage(String picUrl,String directory) {
+    public static void deleteImage(String picUrl, String directory) {
 
         String[] parts = picUrl.split("/");
 
@@ -58,14 +58,11 @@ public class PicUtil {
     }
 
 
-
-
-
     public static String generateUniqueFilename(String originalFilename, MultipartFile file) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String timestamp = dateFormat.format(new Date());
         String contentHash = getFileContentHash(file); // 获取文件内容哈希值
-        return timestamp  + contentHash + getExtension(originalFilename);
+        return timestamp + contentHash + getExtension(originalFilename);
     }
 
     private static String getFileContentHash(MultipartFile file) {
@@ -125,13 +122,6 @@ public class PicUtil {
                 data // 文件数据
         );
     }
-
-
-
-
-
-
-
 
 
 }

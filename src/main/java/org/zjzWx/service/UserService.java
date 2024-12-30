@@ -7,9 +7,9 @@ import org.zjzWx.model.vo.WxLoginVo;
 
 public interface UserService extends IService<User> {
 
- //微信登录
- WxLoginVo wxlogin(String code);
+    //微信登录
+    WxLoginVo wxlogin(String code);
 
- //修改用户信息
- String updateUserInfo(MultipartFile file,String nickname,Integer userId);
+    //修改用户信息
+    String updateUserInfo(MultipartFile file, String nickname, Integer userId);
 }

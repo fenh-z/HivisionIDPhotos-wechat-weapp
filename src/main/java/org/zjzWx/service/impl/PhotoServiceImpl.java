@@ -15,7 +15,7 @@ import java.util.List;
 
 
 @Service
-public class PhotoServiceImpl extends ServiceImpl<PhotoDao,Photo> implements PhotoService {
+public class PhotoServiceImpl extends ServiceImpl<PhotoDao, Photo> implements PhotoService {
 
     @Value("${webset.directory}")
     private String directory;
@@ -24,8 +24,8 @@ public class PhotoServiceImpl extends ServiceImpl<PhotoDao,Photo> implements Pho
     public Page<Photo> photoList(int pageNum, int pageSize, String userId) {
         Page<Photo> page = new Page<>(pageNum, pageSize);
         QueryWrapper<Photo> qw = new QueryWrapper<>();
-        qw.select("id","name","n_img","size","create_time");
-        qw.eq("user_id",userId);
+        qw.select("id", "name", "n_img", "size", "create_time");
+        qw.eq("user_id", userId);
         qw.isNotNull("n_img");
         qw.orderByDesc("create_time");
         return baseMapper.selectPage(page, qw);
@@ -34,11 +34,11 @@ public class PhotoServiceImpl extends ServiceImpl<PhotoDao,Photo> implements Pho
     @Override
     public void deletePhotoId(Integer id, String userId) {
         QueryWrapper<Photo> qw = new QueryWrapper<>();
-        qw.eq("id",id);
-        qw.eq("user_id",userId);
+        qw.eq("id", id);
+        qw.eq("user_id", userId);
         Photo photo = baseMapper.selectOne(qw);
-        if(null!=photo){
-            PicUtil.deleteImage(photo.getNImg(),directory);
+        if (null != photo) {
+            PicUtil.deleteImage(photo.getNImg(), directory);
             baseMapper.deleteById(photo);
         }
     }

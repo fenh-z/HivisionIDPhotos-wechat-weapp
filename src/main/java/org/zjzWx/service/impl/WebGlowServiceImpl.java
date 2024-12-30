@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Service
-public class WebGlowServiceImpl extends ServiceImpl<WebGlowDao,WebGlow> implements WebGlowService {
+public class WebGlowServiceImpl extends ServiceImpl<WebGlowDao, WebGlow> implements WebGlowService {
 
 
 }

@@ -27,7 +27,7 @@ public class PhotoTask {
         qw.isNull("n_img");
         List<Photo> list = photoService.list(qw);
         for (Photo photo : list) {
-            PicUtil.deleteImage(photo.getNImg(),directory);
+            PicUtil.deleteImage(photo.getNImg(), directory);
             photoService.removeById(photo);
         }
 

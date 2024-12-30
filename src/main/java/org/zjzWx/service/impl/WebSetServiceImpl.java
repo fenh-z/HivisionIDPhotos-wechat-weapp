@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class WebSetServiceImpl extends ServiceImpl<WebSetDao,WebSet> implements WebSetService {
+public class WebSetServiceImpl extends ServiceImpl<WebSetDao, WebSet> implements WebSetService {
 
     @Autowired
     private AppSetService appSetService;
@@ -23,7 +23,7 @@ public class WebSetServiceImpl extends ServiceImpl<WebSetDao,WebSet> implements 
         VideoUnitVo videoUnitVo = new VideoUnitVo();
         videoUnitVo.setVideoUnitId(baseMapper.selectById(1).getVideoUnitId());
         QueryWrapper<AppSet> qw = new QueryWrapper<>();
-        qw.eq("type",3);
+        qw.eq("type", 3);
         videoUnitVo.setDownloadHd(appSetService.getOne(qw).getStatus());
         return videoUnitVo;
     }

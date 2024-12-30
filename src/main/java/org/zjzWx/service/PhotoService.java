@@ -10,6 +10,6 @@ public interface PhotoService extends IService<Photo> {
 
     Page<Photo> photoList(int pageNum, int pageSize, String userId);
 
-    void deletePhotoId(Integer id,String userId);
+    void deletePhotoId(Integer id, String userId);
 
 }

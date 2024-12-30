@@ -37,11 +37,11 @@ public class UploadServiceImpl implements UploadService {
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-            body.add("file",new PicUtil.MultipartInputStreamFileResource(multipartFile));
+            body.add("file", new PicUtil.MultipartInputStreamFileResource(multipartFile));
 
             HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
             ResponseEntity<String> response = restTemplate.exchange(
-                    safetyDomain+"checkImg",
+                    safetyDomain + "checkImg",
                     HttpMethod.POST,
                     requestEntity,
                     String.class);
@@ -51,9 +51,9 @@ public class UploadServiceImpl implements UploadService {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(response.getBody());
             String code = jsonNode.get("code").asText();
-            if(code.equals("0")){
+            if (code.equals("0")) {
                 return null;
-            }else {
+            } else {
                 return jsonNode.get("msg").asText();
             }
         } catch (Exception e) {
@@ -61,9 +61,6 @@ public class UploadServiceImpl implements UploadService {
             return "系统繁忙，请稍后再试";
         }
     }
-
-
-
 
 
     @Override
@@ -90,8 +87,6 @@ public class UploadServiceImpl implements UploadService {
             return R.no("图片识别失败，请重试");
         }
     }
-
-
 
 
 }

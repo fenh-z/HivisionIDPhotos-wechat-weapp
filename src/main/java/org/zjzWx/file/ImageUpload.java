@@ -60,12 +60,12 @@ public class ImageUpload {
         }
 
         QueryWrapper<AppSet> qwapp = new QueryWrapper<>();
-        qwapp.eq("type",1);
+        qwapp.eq("type", 1);
         AppSet appSet = appSetService.getOne(qwapp);
         //如果开启鉴黄
-        if(appSet.getStatus()==1){
+        if (appSet.getStatus() == 1) {
             String s = uploadService.checkNsfw(file);
-            if(s!=null){
+            if (s != null) {
                 return R.no(s);
             }
         }
@@ -78,7 +78,7 @@ public class ImageUpload {
         photoRecordService.save(photoRecord);
 
 
-        return uploadService.uploadPhoto(file,originalFilename);
+        return uploadService.uploadPhoto(file, originalFilename);
     }
 
 

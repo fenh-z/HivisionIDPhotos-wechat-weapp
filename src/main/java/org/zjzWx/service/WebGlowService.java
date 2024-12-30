@@ -6,5 +6,4 @@ import org.zjzWx.entity.WebGlow;
 public interface WebGlowService extends IService<WebGlow> {
 
 
-
 }

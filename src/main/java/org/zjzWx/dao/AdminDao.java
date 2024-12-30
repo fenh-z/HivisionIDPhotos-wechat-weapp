@@ -8,5 +8,4 @@ import org.zjzWx.entity.Admin;
 public interface AdminDao extends BaseMapper<Admin> {
 
 
-
 }

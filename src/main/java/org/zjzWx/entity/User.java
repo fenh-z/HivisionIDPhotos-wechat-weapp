@@ -1,4 +1,5 @@
 package org.zjzWx.entity;
+
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -14,20 +15,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName("user")
 public class User {
-/**
+    /**
      * 用户表id
      */
     @TableId(type = IdType.AUTO)
     private Integer id;
-/**
+    /**
      * openid
      */
     private String openid;
-/**
+    /**
      * 用户名字
      */
     private String nickname;
-/**
+    /**
      * 用户头像
      */
     private String avatarUrl;
@@ -36,12 +37,11 @@ public class User {
      */
     private Integer status;
 
-/**
+    /**
      * 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
-
 
 
 }

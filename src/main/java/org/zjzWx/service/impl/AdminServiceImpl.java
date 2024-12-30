@@ -105,13 +105,12 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, Admin> implements Ad
     }
 
 
-
     @Override
     public String checkLogin(String code) {
         QueryWrapper<Admin> qw = new QueryWrapper<>();
-        qw.eq("code",code);
+        qw.eq("code", code);
         Admin admin = baseMapper.selectOne(qw);
-        if(null!=admin && admin.getStatus()==1){
+        if (null != admin && admin.getStatus() == 1) {
             StpUtil.login(1);
             baseMapper.delete(null);
             return StpUtil.getTokenInfo().getTokenValue();
@@ -124,45 +123,45 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, Admin> implements Ad
     public String okLogin(String code1, String code2) {
         try {
             QueryWrapper<Admin> qw = new QueryWrapper<>();
-            qw.eq("code",code2);
+            qw.eq("code", code2);
             Admin admin = baseMapper.selectOne(qw);
-            if(null==admin){
+            if (null == admin) {
                 return "登录请求已失效，请重新刷新二维码";
             }
-            if(admin.getStatus()==1){
+            if (admin.getStatus() == 1) {
                 return "已登录，无需重复登录";
             }
 
             WebSet webSet = webSetService.getById(1);
-            String url = "https://api.weixin.qq.com/sns/jscode2session?appid="+webSet.getAppId()
-                    +"&secret="+webSet.getAppSecret()+"&js_code=" + code1 + "&grant_type=authorization_code";
+            String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + webSet.getAppId()
+                    + "&secret=" + webSet.getAppSecret() + "&js_code=" + code1 + "&grant_type=authorization_code";
 
             //发起请求
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
             JSONObject jsonopenid = JSONObject.parseObject(response.getBody());
-            if(null==jsonopenid){
+            if (null == jsonopenid) {
                 return "与微信通讯失败，请重试";
             }
 
             String openid = jsonopenid.getString("openid");
             // 高风险的微信用户/数据库配置错误/安全域名没有添加会存在openid没有的情况
-            if (null==openid) {
+            if (null == openid) {
                 return jsonopenid.toString();
             }
 
             QueryWrapper<User> qwuser = new QueryWrapper<>();
-            qwuser.eq("openid",openid);
+            qwuser.eq("openid", openid);
             User user = userService.getOne(qwuser);
-            if(null==user){
+            if (null == user) {
                 return "您未注册，无法检查您是否为管理员";
             }
 
-            if(1==user.getId()){
+            if (1 == user.getId()) {
                 admin.setStatus(1);
                 baseMapper.updateById(admin);
                 return null;
-            }else {
+            } else {
                 return "您不是管理员，无法登录";
             }
         } catch (Exception e) {
@@ -170,8 +169,6 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, Admin> implements Ad
             return "代码报错";
         }
     }
-
-
 
 
     @Override
@@ -190,11 +187,11 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, Admin> implements Ad
         QueryWrapper<PhotoRecord> qw1 = new QueryWrapper<>();
         qw1.ge("create_time", startOfDay)
                 .le("create_time", endOfDay)
-                .ne("type",0);
+                .ne("type", 0);
         adminIndexVo.setMakeNum(photoRecordService.count(qw1));
 
         QueryWrapper<PhotoRecord> qw11 = new QueryWrapper<>();
-        qw11.ne("type",0);
+        qw11.ne("type", 0);
         adminIndexVo.setMakeTotal(photoRecordService.count(qw11));
 
         // 统计当天的用户数量
@@ -225,7 +222,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, Admin> implements Ad
                         .ge("create_time", startDate.atStartOfDay())  // 从最近7天的起始日期
                         .le("create_time", endOfDay)  // 改为当前时间
                         .groupBy("DATE(create_time)")
-                        .ne("type",0)
+                        .ne("type", 0)
         );
 
         // 将查询结果转换为日期-数量的映射
@@ -257,9 +254,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, Admin> implements Ad
     @Override
     public IPage<Item> getItemPage(int pageNum, int pageSize, String name) {
         Page<Item> page = new Page<>(pageNum, pageSize);
-        if(null!=name && !"".equals(name)){
+        if (null != name && !"".equals(name)) {
             QueryWrapper<Item> qw = new QueryWrapper<>();
-            qw.like("name",name);
+            qw.like("name", name);
             return itemService.page(page, qw);
         }
         return itemService.page(page, null);
@@ -269,22 +266,22 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, Admin> implements Ad
     public IPage<Custom> getCustomPage(int pageNum, int pageSize, int userId) {
         Page<Custom> page = new Page<>(pageNum, pageSize);
         QueryWrapper<Custom> qw = new QueryWrapper<>();
-        if(0!=userId){
-            qw.eq("user_id",userId);
+        if (0 != userId) {
+            qw.eq("user_id", userId);
         }
         qw.orderByDesc("create_time");
         return customService.page(page, qw);
     }
 
     @Override
-    public IPage<Photo> getPhotoPage(int pageNum, int pageSize, int userId,String name) {
+    public IPage<Photo> getPhotoPage(int pageNum, int pageSize, int userId, String name) {
         Page<Photo> page = new Page<>(pageNum, pageSize);
         QueryWrapper<Photo> qw = new QueryWrapper<>();
-        if(0!=userId){
-            qw.eq("user_id",userId);
+        if (0 != userId) {
+            qw.eq("user_id", userId);
         }
-        if(null!=name && !"".equals(name)){
-            qw.like("name",name);
+        if (null != name && !"".equals(name)) {
+            qw.like("name", name);
         }
         qw.isNotNull("n_img");
         qw.orderByDesc("create_time");
@@ -295,22 +292,22 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, Admin> implements Ad
     public IPage<PhotoRecord> getPhotoRecordPage(int pageNum, int pageSize, int userId) {
         Page<PhotoRecord> page = new Page<>(pageNum, pageSize);
         QueryWrapper<PhotoRecord> qw = new QueryWrapper<>();
-        if(0!=userId){
-            qw.eq("user_id",userId);
+        if (0 != userId) {
+            qw.eq("user_id", userId);
         }
         qw.orderByDesc("create_time");
         return photoRecordService.page(page, qw);
     }
 
     @Override
-    public IPage<User> getUserPage(int pageNum, int pageSize,int userId,String name) {
+    public IPage<User> getUserPage(int pageNum, int pageSize, int userId, String name) {
         Page<User> page = new Page<>(pageNum, pageSize);
         QueryWrapper<User> qw = new QueryWrapper<>();
-        if(0!=userId){
-            qw.eq("id",userId);
+        if (0 != userId) {
+            qw.eq("id", userId);
         }
-        if(null!=name && !"".equals(name)){
-            qw.like("nickname",name);
+        if (null != name && !"".equals(name)) {
+            qw.like("nickname", name);
         }
         qw.orderByDesc("create_time");
         return userService.page(page, qw);
@@ -352,44 +349,44 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, Admin> implements Ad
     @Override
     public String updateUserStatus(Integer userId, Integer type) {
         //type=1踢掉登录状态，2删除定制记录，3删除保存记录，4删除行为记录，5禁止登录并踢掉登录，6恢复登录
-        if(type==1){
+        if (type == 1) {
             StpUtil.kickout(userId);
             return "踢掉成功";
-        }else if(type==2){
+        } else if (type == 2) {
             QueryWrapper<Custom> qw = new QueryWrapper<>();
-            qw.eq("user_id",userId);
+            qw.eq("user_id", userId);
             customService.remove(qw);
             return "删除成功";
-        }else if(type==3){
+        } else if (type == 3) {
             QueryWrapper<Photo> qw = new QueryWrapper<>();
-            qw.eq("user_id",userId);
+            qw.eq("user_id", userId);
             List<Photo> list = photoService.list(qw);
-            if(null!=list && list.size()>0){
+            if (null != list && list.size() > 0) {
                 for (Photo photo : list) {
-                    PicUtil.deleteImage(photo.getNImg(),directory);
+                    PicUtil.deleteImage(photo.getNImg(), directory);
                     photoService.removeById(photo);
                 }
             }
             return "删除成功";
-        }else if(type==4){
+        } else if (type == 4) {
             QueryWrapper<PhotoRecord> qw = new QueryWrapper<>();
-            qw.eq("user_id",userId);
+            qw.eq("user_id", userId);
             photoRecordService.remove(qw);
             return "删除成功";
-        }else if(type==5){
+        } else if (type == 5) {
             User user = new User();
             user.setId(userId);
             user.setStatus(2);
             userService.updateById(user);
             StpUtil.kickout(userId);
             return "已禁止并踢掉登录";
-        }else if(type==6){
+        } else if (type == 6) {
             User user = new User();
             user.setId(userId);
             user.setStatus(1);
             userService.updateById(user);
             return "已恢复";
-        }else {
+        } else {
             return "非法请求";
         }
 
@@ -401,48 +398,48 @@ public class AdminServiceImpl extends ServiceImpl<AdminDao, Admin> implements Ad
         List<AppSet> list = appSetService.list();
         for (AppSet appSet : list) {
 
-            if(appSet.getType()==3){
-                QueryWrapper<PhotoRecord> qw1  = new QueryWrapper<>();
-                qw1.in("type",1,2,3,4);
+            if (appSet.getType() == 3) {
+                QueryWrapper<PhotoRecord> qw1 = new QueryWrapper<>();
+                qw1.in("type", 1, 2, 3, 4);
                 exploreIndexAdmin.setZjzCount(photoRecordService.count(qw1));
             }
 
-            if(appSet.getType()==4){
-                QueryWrapper<PhotoRecord> qw2  = new QueryWrapper<>();
-                qw2.eq("type",7);
+            if (appSet.getType() == 4) {
+                QueryWrapper<PhotoRecord> qw2 = new QueryWrapper<>();
+                qw2.eq("type", 7);
                 exploreIndexAdmin.setGenerateLayoutCount(photoRecordService.count(qw2));
             }
 
-            if(appSet.getType()==5){
-                QueryWrapper<PhotoRecord> qw3  = new QueryWrapper<>();
-                qw3.eq("type",5);
+            if (appSet.getType() == 5) {
+                QueryWrapper<PhotoRecord> qw3 = new QueryWrapper<>();
+                qw3.eq("type", 5);
                 exploreIndexAdmin.setColourizeCount(photoRecordService.count(qw3));
             }
 
-            if(appSet.getType()==6){
-                QueryWrapper<PhotoRecord> qw4  = new QueryWrapper<>();
-                qw4.eq("type",6);
+            if (appSet.getType() == 6) {
+                QueryWrapper<PhotoRecord> qw4 = new QueryWrapper<>();
+                qw4.eq("type", 6);
                 exploreIndexAdmin.setMattingCount(photoRecordService.count(qw4));
             }
-            if(appSet.getType()==7){
-                QueryWrapper<PhotoRecord> qw5  = new QueryWrapper<>();
-                qw5.eq("type",9);
+            if (appSet.getType() == 7) {
+                QueryWrapper<PhotoRecord> qw5 = new QueryWrapper<>();
+                qw5.eq("type", 9);
                 exploreIndexAdmin.setEditImageCount(photoRecordService.count(qw5));
             }
 
-            if(appSet.getType()==8){
-                QueryWrapper<PhotoRecord> qw6  = new QueryWrapper<>();
-                qw6.eq("type",8);
+            if (appSet.getType() == 8) {
+                QueryWrapper<PhotoRecord> qw6 = new QueryWrapper<>();
+                qw6.eq("type", 8);
                 exploreIndexAdmin.setCartoonCount(photoRecordService.count(qw6));
             }
 
         }
-        QueryWrapper<PhotoRecord> qw7  = new QueryWrapper<>();
-        qw7.eq("type",10);
+        QueryWrapper<PhotoRecord> qw7 = new QueryWrapper<>();
+        qw7.eq("type", 10);
         exploreIndexAdmin.setImageuploadCount(photoRecordService.count(qw7));
 
         QueryWrapper<PhotoRecord> qw8 = new QueryWrapper<>();
-        qw8.ne("type",0);
+        qw8.ne("type", 0);
         exploreIndexAdmin.setImageCount(photoRecordService.count(qw8));
 
 

@@ -55,64 +55,66 @@ public class OtherApiServiceImpl implements OtherApiService {
     private UploadService uploadService;
 
 
-
     @Override
     public ExploreIndexDto exploreDtoCount() {
         ExploreIndexDto exploreIndexDto = new ExploreIndexDto();
         List<AppSet> list = appSetService.list();
         for (AppSet appSet : list) {
 
-            if(appSet.getType()==3){
-                QueryWrapper<PhotoRecord> qw1  = new QueryWrapper<>();
-                qw1.in("type",1,2,3,4,10);
+            if (appSet.getType() == 3) {
+                QueryWrapper<PhotoRecord> qw1 = new QueryWrapper<>();
+                qw1.in("type", 1, 2, 3, 4, 10);
                 exploreIndexDto.setZjzCount(photoRecordService.count(qw1));
             }
 
-            if(appSet.getType()==4){
-                if(appSet.getStatus()==0){
+            if (appSet.getType() == 4) {
+                if (appSet.getStatus() == 0) {
                     exploreIndexDto.setGenerateLayoutCount(-1L);
-                }else {
-                    QueryWrapper<PhotoRecord> qw2  = new QueryWrapper<>();
-                    qw2.eq("type",7);
+                } else {
+                    QueryWrapper<PhotoRecord> qw2 = new QueryWrapper<>();
+                    qw2.eq("type", 7);
                     exploreIndexDto.setGenerateLayoutCount(photoRecordService.count(qw2));
                 }
             }
 
-            if(appSet.getType()==5){
-                if(appSet.getStatus()==0){
+            if (appSet.getType() == 5) {
+                if (appSet.getStatus() == 0) {
                     exploreIndexDto.setColourizeCount(-1L);
-                }else {
-                    QueryWrapper<PhotoRecord> qw3  = new QueryWrapper<>();
-                    qw3.eq("type",5);
+                } else {
+                    QueryWrapper<PhotoRecord> qw3 = new QueryWrapper<>();
+                    qw3.eq("type", 5);
                     exploreIndexDto.setColourizeCount(photoRecordService.count(qw3));
                 }
             }
 
-            if(appSet.getType()==6){
-                if(appSet.getStatus()==0){
-                    exploreIndexDto.setMattingCount(-1L);;
-                }else {
-                    QueryWrapper<PhotoRecord> qw4  = new QueryWrapper<>();
-                    qw4.eq("type",6);
+            if (appSet.getType() == 6) {
+                if (appSet.getStatus() == 0) {
+                    exploreIndexDto.setMattingCount(-1L);
+                    ;
+                } else {
+                    QueryWrapper<PhotoRecord> qw4 = new QueryWrapper<>();
+                    qw4.eq("type", 6);
                     exploreIndexDto.setMattingCount(photoRecordService.count(qw4));
                 }
             }
-            if(appSet.getType()==7){
-                if(appSet.getStatus()==0){
-                    exploreIndexDto.setEditImageCount(-1L);;
-                }else {
-                    QueryWrapper<PhotoRecord> qw5  = new QueryWrapper<>();
-                    qw5.eq("type",9);
+            if (appSet.getType() == 7) {
+                if (appSet.getStatus() == 0) {
+                    exploreIndexDto.setEditImageCount(-1L);
+                    ;
+                } else {
+                    QueryWrapper<PhotoRecord> qw5 = new QueryWrapper<>();
+                    qw5.eq("type", 9);
                     exploreIndexDto.setEditImageCount(photoRecordService.count(qw5));
                 }
             }
 
-            if(appSet.getType()==8){
-                if(appSet.getStatus()==0){
-                    exploreIndexDto.setCartoonCount(-1L);;
-                }else {
-                    QueryWrapper<PhotoRecord> qw6  = new QueryWrapper<>();
-                    qw6.eq("type",8);
+            if (appSet.getType() == 8) {
+                if (appSet.getStatus() == 0) {
+                    exploreIndexDto.setCartoonCount(-1L);
+                    ;
+                } else {
+                    QueryWrapper<PhotoRecord> qw6 = new QueryWrapper<>();
+                    qw6.eq("type", 8);
                     exploreIndexDto.setCartoonCount(photoRecordService.count(qw6));
                 }
             }
@@ -140,43 +142,42 @@ public class OtherApiServiceImpl implements OtherApiService {
 
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<String> response = restTemplate.exchange(
-                    colourizeDomain+"colourizeImg",
+                    colourizeDomain + "colourizeImg",
                     HttpMethod.POST,
                     requestEntity,
                     String.class);
 
 
             ColourizeDto colourizeDto = JSON.parseObject(response.getBody(), ColourizeDto.class);
-            if(null==colourizeDto && 2!=colourizeDto.getStatus()) {
+            if (null == colourizeDto && 2 != colourizeDto.getStatus()) {
                 return null;
             }
 
-                //base64转MultipartFile，进行保存文件并返回url
-                MultipartFile file = PicUtil.base64ToMultipartFile(colourizeDto.getProcessedImage());
-                String originalFilename = file.getOriginalFilename();
-                String filename = PicUtil.filesCopy("colourize", directory, originalFilename, file);
+            //base64转MultipartFile，进行保存文件并返回url
+            MultipartFile file = PicUtil.base64ToMultipartFile(colourizeDto.getProcessedImage());
+            String originalFilename = file.getOriginalFilename();
+            String filename = PicUtil.filesCopy("colourize", directory, originalFilename, file);
 
 
+            String imagePath = picDomain + "colourize" + "/" + filename;
+            Photo photo = new Photo();
+            photo.setUserId(exploreDto.getUserId());
+            photo.setName("老照片上色");
+            photo.setNImg(imagePath);
+            photo.setSize("无规格");
+            photo.setCreateTime(new Date());
+            photoService.save(photo);
 
-                String imagePath = picDomain + "colourize" + "/" + filename;
-                Photo photo = new Photo();
-                photo.setUserId(exploreDto.getUserId());
-                photo.setName("老照片上色");
-                photo.setNImg(imagePath);
-                photo.setSize("无规格");
-                photo.setCreateTime(new Date());
-                photoService.save(photo);
 
+            //保存用户行为记录
+            PhotoRecord record = new PhotoRecord();
+            record.setType(5);
+            record.setName("生成老照片上色");
+            record.setUserId(exploreDto.getUserId());
+            record.setCreateTime(new Date());
+            photoRecordService.save(record);
 
-                //保存用户行为记录
-                PhotoRecord record = new PhotoRecord();
-                record.setType(5);
-                record.setName("生成老照片上色");
-                record.setUserId(exploreDto.getUserId());
-                record.setCreateTime(new Date());
-                photoRecordService.save(record);
-
-                return imagePath;
+            return imagePath;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -199,24 +200,23 @@ public class OtherApiServiceImpl implements OtherApiService {
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
             MultipartFile multipartFile = PicUtil.base64ToMultipartFile(exploreDto.getProcessedImage());
             body.add("input_image", new PicUtil.MultipartInputStreamFileResource(multipartFile));
-            body.add("human_matting_model",mattingModel);
-            if(null!=exploreDto.getDpi()){
-                body.add("dpi",exploreDto.getDpi()); //代表用户输入了dpi
+            body.add("human_matting_model", mattingModel);
+            if (null != exploreDto.getDpi()) {
+                body.add("dpi", exploreDto.getDpi()); //代表用户输入了dpi
             }
-
 
 
             HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
             ResponseEntity<String> response = restTemplate.exchange(
-                    mattingDomain+"/human_matting",
+                    mattingDomain + "/human_matting",
                     HttpMethod.POST,
                     requestEntity,
                     String.class);
 
 
             HivisionDto hivisionDto = JSON.parseObject(response.getBody(), HivisionDto.class);
-            if(!hivisionDto.isStatus()){
+            if (!hivisionDto.isStatus()) {
                 return null;
             }
 
@@ -224,7 +224,6 @@ public class OtherApiServiceImpl implements OtherApiService {
             MultipartFile file = PicUtil.base64ToMultipartFile(hivisionDto.getImageBase64());
             String originalFilename = file.getOriginalFilename();
             String filename = PicUtil.filesCopy("matting", directory, originalFilename, file);
-
 
 
             String imagePath = picDomain + "matting" + "/" + filename;
@@ -268,30 +267,30 @@ public class OtherApiServiceImpl implements OtherApiService {
             body.add("input_image", new PicUtil.MultipartInputStreamFileResource(multipartFile));
 //            新版本HivisionIDPhotos的input_image_base64限制了1M，暂时停止使用base64传输
 //            body.add("input_image_base64",exploreDto.getProcessedImage());
-            if(null!=exploreDto.getHeight()){
-                body.add("height",exploreDto.getHeight());  //代表用户输入了高度
+            if (null != exploreDto.getHeight()) {
+                body.add("height", exploreDto.getHeight());  //代表用户输入了高度
             }
-            if(null!=exploreDto.getWidth()){
-                body.add("width",exploreDto.getWidth());  //代表用户输入了宽度
+            if (null != exploreDto.getWidth()) {
+                body.add("width", exploreDto.getWidth());  //代表用户输入了宽度
             }
-            if(null!=exploreDto.getKb()){
-                body.add("kb",exploreDto.getKb());  //代表用户输入了dpi
+            if (null != exploreDto.getKb()) {
+                body.add("kb", exploreDto.getKb());  //代表用户输入了dpi
             }
-            if(null!=exploreDto.getDpi()){
-                body.add("dpi",exploreDto.getDpi());  //代表用户输入了kb
+            if (null != exploreDto.getDpi()) {
+                body.add("dpi", exploreDto.getDpi());  //代表用户输入了kb
             }
 
             HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
             ResponseEntity<String> response = restTemplate.exchange(
-                    mattingDomain+"/generate_layout_photos",
+                    mattingDomain + "/generate_layout_photos",
                     HttpMethod.POST,
                     requestEntity,
                     String.class);
 
 
             HivisionDto hivisionDto = JSON.parseObject(response.getBody(), HivisionDto.class);
-            if(!hivisionDto.isStatus()){
+            if (!hivisionDto.isStatus()) {
                 return null;
             }
 
@@ -299,7 +298,6 @@ public class OtherApiServiceImpl implements OtherApiService {
             MultipartFile file = PicUtil.base64ToMultipartFile(hivisionDto.getImageBase64());
             String originalFilename = file.getOriginalFilename();
             String filename = PicUtil.filesCopy("generateLayoutPhotos", directory, originalFilename, file);
-
 
 
             String imagePath = picDomain + "generateLayoutPhotos" + "/" + filename;
@@ -408,12 +406,12 @@ public class OtherApiServiceImpl implements OtherApiService {
 
 
             QueryWrapper<AppSet> qwapp = new QueryWrapper<>();
-            qwapp.eq("type",1);
+            qwapp.eq("type", 1);
             AppSet appSet = appSetService.getOne(qwapp);
             //如果开启鉴黄
-            if(appSet.getStatus()==1){
+            if (appSet.getStatus() == 1) {
                 String s = uploadService.checkNsfw(file);
-                if(s!=null){
+                if (s != null) {
                     return null;
                 }
             }
@@ -449,14 +447,14 @@ public class OtherApiServiceImpl implements OtherApiService {
 
 
     @Override
-    public long checkTheFreeQuota(Integer type,Integer type2,Integer userId){
+    public long checkTheFreeQuota(Integer type, Integer type2, Integer userId) {
         QueryWrapper<AppSet> qw = new QueryWrapper<>();
-        qw.eq("type",type);
+        qw.eq("type", type);
         AppSet appSet = appSetService.getOne(qw);
-        if(appSet.getStatus()==1){
+        if (appSet.getStatus() == 1) {
             return -1L;
         }
-        if(appSet.getStatus()==0){
+        if (appSet.getStatus() == 0) {
             return 0L;
         }
 
@@ -472,21 +470,17 @@ public class OtherApiServiceImpl implements OtherApiService {
 
         // 统计当天的照片制作次数
         QueryWrapper<PhotoRecord> qw2 = new QueryWrapper<>();
-        qw2.eq("type",type2);
-        qw2.eq("user_id",userId);
+        qw2.eq("type", type2);
+        qw2.eq("user_id", userId);
         qw2.ge("create_time", startOfDay);
         qw2.le("create_time", endOfDay);
         long count = photoRecordService.count(qw2);
-        if(count< appSet.getCounts()){
-            return appSet.getCounts()-count;
+        if (count < appSet.getCounts()) {
+            return appSet.getCounts() - count;
         }
 
         return 0L;
     }
-
-
-
-
 
 
 }

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Service
-public class CustomServiceImpl extends ServiceImpl<CustomDao,Custom> implements CustomService {
+public class CustomServiceImpl extends ServiceImpl<CustomDao, Custom> implements CustomService {
 
 
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class PhotoRecordServiceImpl extends ServiceImpl<PhotoRecordDao,PhotoRecord> implements PhotoRecordService {
+public class PhotoRecordServiceImpl extends ServiceImpl<PhotoRecordDao, PhotoRecord> implements PhotoRecordService {
 
 
 }

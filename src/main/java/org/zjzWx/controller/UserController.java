@@ -1,4 +1,5 @@
 package org.zjzWx.controller;
+
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +21,12 @@ public class UserController {
 
     //登录
     @GetMapping("/login")
-    public R login(String code){
-        if(null==code){
+    public R login(String code) {
+        if (null == code) {
             return R.no();
         }
         WxLoginVo wxlogin = userService.wxlogin(code);
-        if(null!=wxlogin.getOpenid()){
+        if (null != wxlogin.getOpenid()) {
             return R.ok(wxlogin);
         }
         return R.no(wxlogin.getMsg());
@@ -33,12 +34,12 @@ public class UserController {
 
     //获取用户信息
     @GetMapping("/userInfo")
-    public R userInfo(){
+    public R userInfo() {
         QueryWrapper<User> qw = new QueryWrapper<>();
-        qw.select("nickname","avatar_url","create_time");
-        qw.eq("id",StpUtil.getTokenInfo().getLoginId());
+        qw.select("nickname", "avatar_url", "create_time");
+        qw.eq("id", StpUtil.getTokenInfo().getLoginId());
         User user = userService.getOne(qw);
-        if(null==user){
+        if (null == user) {
             return R.no();
         }
         return R.ok(user);
@@ -47,29 +48,18 @@ public class UserController {
     //保存用户信息
     @PostMapping("/updateUserInfo")
     public R updateUserInfo(@RequestParam(name = "file", required = false) MultipartFile file,
-                            @RequestParam(name = "nickname", required = false) String nickname){
-        if(null==file){
-            if(null!=nickname && nickname.length()>20){
+                            @RequestParam(name = "nickname", required = false) String nickname) {
+        if (null == file) {
+            if (null != nickname && nickname.length() > 20) {
                 return R.no("名字太长啦~");
             }
         }
-        String msg = userService.updateUserInfo(file,nickname,Integer.parseInt(StpUtil.getTokenInfo().getLoginId().toString()));
-        if(null!=msg){
+        String msg = userService.updateUserInfo(file, nickname, Integer.parseInt(StpUtil.getTokenInfo().getLoginId().toString()));
+        if (null != msg) {
             return R.no(msg);
         }
         return R.ok(null);
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
