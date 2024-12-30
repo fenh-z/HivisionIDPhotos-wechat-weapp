@@ -57,7 +57,6 @@ public class PicUtil {
 
     }
 
-
     public static String generateUniqueFilename(String originalFilename, MultipartFile file) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String timestamp = dateFormat.format(new Date());
